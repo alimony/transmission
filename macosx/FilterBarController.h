@@ -29,6 +29,7 @@
 #define FILTER_DOWNLOAD @"Download"
 #define FILTER_SEED     @"Seed"
 #define FILTER_PAUSE    @"Pause"
+#define FILTER_ERROR    @"Error"
 
 #define FILTER_TYPE_NAME    @"Name"
 #define FILTER_TYPE_TRACKER @"Tracker"
@@ -38,7 +39,7 @@
 @interface FilterBarController : NSViewController
 {
     IBOutlet FilterButton * fNoFilterButton, * fActiveFilterButton, * fDownloadFilterButton,
-                            * fSeedFilterButton, * fPauseFilterButton;
+                            * fSeedFilterButton, * fPauseFilterButton, * fErrorFilterButton;
 
     IBOutlet NSSearchField * fSearchField;
 
@@ -58,7 +59,7 @@
 - (void) focusSearchField;
 
 - (void) setCountAll: (NSUInteger) all active: (NSUInteger) active downloading: (NSUInteger) downloading
-        seeding: (NSUInteger) seeding paused: (NSUInteger) paused;
+        seeding: (NSUInteger) seeding paused: (NSUInteger) paused error:(NSUInteger) error;
 
 
 @end

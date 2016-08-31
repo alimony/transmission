@@ -2302,9 +2302,9 @@ static void removeKeRangerRansomware()
 
 - (void) applyFilter
 {
-    __block int32_t active = 0, downloading = 0, seeding = 0, paused = 0;
+    __block int32_t active = 0, downloading = 0, seeding = 0, paused = 0, error = 0;
     NSString * filterType = [fDefaults stringForKey: @"Filter"];
-    BOOL filterActive = NO, filterDownload = NO, filterSeed = NO, filterPause = NO, filterStatus = YES;
+    BOOL filterActive = NO, filterDownload = NO, filterSeed = NO, filterPause = NO, filterError = NO, filterStatus = YES;
     if ([filterType isEqualToString: FILTER_ACTIVE])
         filterActive = YES;
     else if ([filterType isEqualToString: FILTER_DOWNLOAD])
@@ -2313,6 +2313,8 @@ static void removeKeRangerRansomware()
         filterSeed = YES;
     else if ([filterType isEqualToString: FILTER_PAUSE])
         filterPause = YES;
+    else if ([filterType isEqualToString: FILTER_ERROR])
+        filterError = YES;
     else
         filterStatus = NO;
 
@@ -2345,6 +2347,11 @@ static void removeKeRangerRansomware()
                 if (filterStatus && !((filterActive && isActive) || filterDownload))
                     return NO;
             }
+        }
+        else if ([torrent isError]) {
+            OSAtomicIncrement32(&error);
+            if (filterStatus && !filterError)
+                return NO;
         }
         else
         {
@@ -2405,7 +2412,7 @@ static void removeKeRangerRansomware()
 
     //set button tooltips
     if (fFilterBar)
-        [fFilterBar setCountAll: [fTorrents count] active: active downloading: downloading seeding: seeding paused: paused];
+        [fFilterBar setCountAll: [fTorrents count] active: active downloading: downloading seeding: seeding paused: paused error:error];
 
     //if either the previous or current lists are blank, set its value to the other
     const BOOL groupRows = [allTorrents count] > 0 ? [fDefaults boolForKey: @"SortByGroup"] : ([fDisplayedTorrents count] > 0 && [fDisplayedTorrents[0] isKindOfClass: [TorrentGroup class]]);
